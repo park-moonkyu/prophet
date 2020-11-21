@@ -2,45 +2,42 @@
 
 ![zz](https://img1.daumcdn.net/thumb/R800x0/?scode=mtistory2&fname=https%3A%2F%2Ft1.daumcdn.net%2Fcfile%2Ftistory%2F9904793B5B1BCF471B) </br></br>
 
-If you want to see metadata or get more detailed information on the data set, please refer to the link below.</br>
-<https://www.dataquest.io/blog/web-scraping-tutorial-python/>
+아래 Facebook에서 제공하는 docs를 가시면 더욱더 자세하게 해당 내용을 익힐수 있다. </br>
+<https://facebook.github.io/prophet/docs/quick_start.html>
  
-# 다양한 크롤링 라이브러리
-파이썬으로 웹을 크롤링할수있는 라이브러리와 프레임워크는 매우 다양하다.</br>
-그중 BeautifulSoap 와 Selenium 을 활용해보고자 한다.</br></br></br>
+# Introduction
+우선 Time Series(시계열) 분석을 할때는 다양한 모델들이 쓰인다. 우선 가장많이쓰이는 뉴럴넷 기반의 LSTM 같은 Sequential 모델 뿐만 아니라, ARIMA , Prophet 등등이 있을것이다.<br>
+그중 통계적 지식이 없는 실무자들도 가장 접근하기 쉬운 페이스북에서 만든 Prophet으로 다양한 데이터를 가지고 실습을 해보았다. <br>
+결론부터 말하면 쓰기 엄청 쉽다  정확도가 생각보다 높으며 파라미터로 모델 수정이 용이하다.<br>
+하지만, 확실히 내가 느끼는 한계를 공유하려고 한다. <br>
+1. 데이터가 일단위 데이터가 있어야한다. <br>
+2. 어느정도 노이즈는 괜찮지만 갑자기 너무나 다른 경향을 띄는 데이터에 대해선 오차가 심하다.<br>
+첨언으로 나의 경우에는 리테일 매출 예측을 Prophet으로 돌려보았지만 코로나사태이후에 매출으로 계절성이나 트렌드가 무너지는 현상이 발생했다. <br><br><br>
 
-### 보면 좋을 순서 : Crawling(Beautifulsoap).ipynb -> Crawling(Selenium).ipynb -> mycrawling.ipynb 
-위의 코드순서는 각각을 소개하고 mycrawling에서는 두개의 시간을 비교해보았다. </br>
-더 빠른 속도를 낼수있는 코드는 언제든지 환영이다 ! Welcome to contribution
- ## Table of content
+# Table of content
  
-1. BeautifulSoup
-2. Selenium
-3. 차이
-# 1. Requests or urlib(beautifulsoup)
+1. Prophet 이란 ?
+3. 레퍼지토리안에있는 코드를 통한 실제 예제 실습
 
-beautifulsoap는 HTML, XML 파일의 정보를 추출해내는 python 라이브러리 이다.</br>
+# what is Prophet ?
 
-이 방식은 python 내장 모듈인 requests 혹은 urllib 을 이용해 HTML을 다운받고, beautifulsoup로 데이터를 추출하는 방식이다.</br>
-해당 방식은 HTML을 다운 받기에 , 서버사이드렌더링을 사용하지않는 SPA 사이트나, javaScript 렌더링을 필요로하는 사이트들은 크롤링하기 어렵다고 한다.</br></br>
+Prophet은 페이스북에서 공개한 시계열 예측 라이브러리이다.<br>
+Prophet의 주요 구성요소는 Trend, Seasonality, Holiday 이다.<br>
+<br>
+## y(t) = g(t) + s(t) + h(t) + ei 
+### g(t) = piecewise linear or logistic growth curve for modeling non-periodic changes in time series 
+### s(t) = periodic changes (즉, Weekly, yearly, seasonality)
+### h(t) = effects of holidays(user provided) with irregular schedules
+### ei : error term accounts for any unusual changes not accommodated by the model 
+
+쉽게 말하면 다음과 같다.<br>
+g(t) = 주기적이지 않은 트렌드를 보여준다. 선형 또는 logistic 곡선을 이룬다. <br>
+s(t) = weekly, yearly 등의 주기적인 패턴을 말한다. <br>
+h(t) = 휴일과 같은 불규칙한 이벤트들을 말한다 .<br>
+만약 특정 기간에 값이 비정상적으로 증가 또는 감소했다면 holiday로 정의하여 모델에 반영할수 있다.<br>
+
+마지막으로 ei는 정규분포라고 생각한 오차이다. <br>
 
 
-SPA 에 대한 설명 : https://m.blog.naver.com/PostView.nhn?blogId=azure0777&logNo=220812404024&proxyReferer=https:%2F%2Fwww.google.com%2F</br>
-렌더링에 대한 설명 : https://tuhbm.github.io/2017/08/10/rendering1/</br></br>
+# 그럼 레퍼지토리의 코드들로 실제 실습을 해보자.
 
-장점 --> 쉽고 멀티프로세스 혹은 멀티 쓰레드 적용시엔 빠르다.</br>
-단점 --> 렌더링이 필요한 사이트들을 크롤링하기 어려움. 병렬처리 로직을 별도로 작성하지 않으면 느린편</br>
-</br></br>
-
-# 2.Selenium
-</br></br>
-셀리니움은 웹 자동화 테스트(버튼클릭, 스크롤 조작)에 사용되는 프레임워크이다.</br>
-셀리니움을 이용한 크롤러는 웹 페이지에서 javascript 렌더링을 통해 생성되는 데이터들을 손쉽게 가져올수있다.</br>
-인터넷브라우저를 통해 크롤링을 하는 개념이라, 실제 보여지는 웹페이지의 전부를 가져올 수 있고 디버깅 방법 또한 직관적이다.</br>
-하지만 실제 웹브라우저를 실행시키는 방법이기때문에 속도가 많이 느리고 메모리도 상대적으로 많이 차지한다.</br>
-멀티프로세스를 사용해서 여러 브라우저를 크롤링하도록 하면 속도를 개선할수있다.</br>
-셀리니움 사용시 도커를 사용하면 편리하다고한다. (아직 도커를 이용해서 크롤링을 해보진않았다 ㅠㅠ)</br>
-
-</br></br>
-장점 --> 사용바작 보는 웹 페이지의 모든 정보를 가져올 수 있다.</br>
-단점 --> 느리고 메모리를 많이 차지한다.
