@@ -17,6 +17,7 @@
 # Table of content
  
 1. Prophet 이란 ?
+2. Neural Prophet 
 3. 레퍼지토리안에있는 코드를 통한 실제 예제 실습
 
 # what is Prophet ?
@@ -38,6 +39,9 @@ h(t) = 휴일과 같은 불규칙한 이벤트들을 말한다 .<br>
 
 마지막으로 ei는 정규분포라고 생각한 오차이다. <br>
 
+# Neural Prophet 
+
+<https://ourownstory.github.io/neural_prophet/>
 
 # 그럼 레퍼지토리의 코드들로 실제 실습을 해보자.
 
