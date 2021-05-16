@@ -43,5 +43,7 @@ h(t) = 휴일과 같은 불규칙한 이벤트들을 말한다 .<br>
 
 <https://ourownstory.github.io/neural_prophet/>
 
+Neural Prophet 관련 
+<http://insightcampus.co.kr:9090/insightcommunity/?mod=document&uid=12964>
 # 그럼 레퍼지토리의 코드들로 실제 실습을 해보자.
 
